@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import axios from '../api/axios';
+
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import '../styles/Messaging.css';
 
@@ -24,7 +25,7 @@ const Messaging = () => {
       try {
         // Check if exchange request is accepted
         const checkRes = await axios.get(
-          `http://localhost:5000/api/exchange/accepted/${recipientId}`,
+          `/api/exchange/accepted/${recipientId}`,
           { headers: { Authorization: localStorage.getItem('token') } }
         );
         if (!checkRes.data.accepted) {
@@ -35,13 +36,13 @@ const Messaging = () => {
 
         // Load messages
         const messagesRes = await axios.get(
-          `http://localhost:5000/api/messages/${recipientId}`,
+          `/api/messages/${recipientId}`,
           { headers: { Authorization: localStorage.getItem('token') } }
         );
         setMessages(messagesRes.data);
 
         // Load recipient info
-        const userRes = await axios.get(`http://localhost:5000/api/users/${recipientId}`);
+        const userRes = await axios.get(`/api/users/${recipientId}`);
         setRecipientName(userRes.data.name);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -62,7 +63,7 @@ const Messaging = () => {
     if (!content.trim() && type === 'text') return;
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/messages',
+        '/api/messages',
         {
           to: recipientId,
           content,
@@ -100,7 +101,7 @@ const Messaging = () => {
       formData.append('to', recipientId);
 
       // Upload file to server
-      const res = await axios.post('http://localhost:5000/api/messages/upload', formData, {
+      const res = await axios.post('/api/messages/upload', formData, {
         headers: {
           Authorization: localStorage.getItem('token'),
           'Content-Type': 'multipart/form-data',
@@ -127,7 +128,8 @@ const Messaging = () => {
 
   // Render different message types properly
   const renderMessageContent = (msg) => {
-    const baseUrl = 'http://localhost:5000'; // your backend base URL
+    const baseUrl = process.env.REACT_APP_API_URL;
+
 
     switch (msg.type) {
       case 'text':

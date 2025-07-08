@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import '../styles/ProfileEdit.css';
 
 const ProfileEdit = () => {
@@ -19,7 +19,7 @@ const ProfileEdit = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/users/profile/${localStorage.getItem('userId')}`);
+      const res = await fetch(`/api/users/profile/${localStorage.getItem('userId')}`);
       const data = await res.json();
       setProfile({
         bio: data.bio || '',
@@ -38,7 +38,7 @@ const ProfileEdit = () => {
     setError('');
     
     try {
-      await fetch('http://localhost:5000/api/users/profile', {
+      await fetch('/api/users/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

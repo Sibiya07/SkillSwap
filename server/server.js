@@ -9,12 +9,28 @@ const exchangeRoutes = require('./routes/exchangeRoutes');
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://skill-swap-six-beta.vercel.app'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+}));
+
+
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/exchange', exchangeRoutes);
-app.use('/api/users', userRoutes);
 app.use('/uploads', express.static('uploads'));
 
 mongoose.connect(process.env.MONGO_URI)

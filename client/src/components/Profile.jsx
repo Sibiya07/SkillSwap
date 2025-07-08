@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Profile.css';
+import axios from '../api/axios';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -16,7 +17,7 @@ const Profile = () => {
           return;
         }
         
-        const response = await fetch(`http://localhost:5000/api/users/profile/${userId}`);
+        const response = await fetch(`/api/users/profile/${userId}`);
         const data = await response.json();
         setUser(data);
       } catch (error) {

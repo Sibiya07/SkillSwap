@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/AllChats.css';
 
@@ -12,7 +12,7 @@ const AllChats = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/messages/mychats', {
+        const res = await axios.get('/api/messages/mychats', {
           headers: { Authorization: localStorage.getItem('token') }
         });
         setChats(res.data);

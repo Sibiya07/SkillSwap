@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/ExchangeManager.css';
 
@@ -18,7 +18,7 @@ const ExchangeManager = () => {
           return;
         }
 
-        const res = await axios.get('http://localhost:5000/api/exchange', {
+        const res = await axios.get('/api/exchange', {
           headers: {
             Authorization: token,
           },
@@ -45,7 +45,7 @@ const ExchangeManager = () => {
       }
 
       await axios.put(
-        `http://localhost:5000/api/exchange/${id}`,
+        `/api/exchange/${id}`,
         { status },
         {
           headers: {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import '../styles/SkillFilter.css';
 
 const SkillFilter = () => {
@@ -15,10 +15,10 @@ const SkillFilter = () => {
     const fetchData = async () => {
       try {
         const [usersRes, requestsRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/users/all', {
+          axios.get('/api/users/all', {
             headers: { Authorization: localStorage.getItem('token') },
           }),
-          axios.get('http://localhost:5000/api/exchange', {
+          axios.get('/api/exchange', {
             headers: { Authorization: localStorage.getItem('token') },
           }),
         ]);
@@ -51,12 +51,12 @@ const SkillFilter = () => {
   const sendExchangeRequest = async (toUserId) => {
     try {
       await axios.post(
-        'http://localhost:5000/api/exchange',
+        '/api/exchange',
         { to: toUserId },
         { headers: { Authorization: localStorage.getItem('token') } }
       );
       // Refresh requests after sending
-      const updatedRequests = await axios.get('http://localhost:5000/api/exchange', {
+      const updatedRequests = await axios.get('/api/exchange', {
         headers: { Authorization: localStorage.getItem('token') },
       });
       setRequests(updatedRequests.data);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Login.css';
 
@@ -20,7 +20,10 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/users/login', form);
+       console.log(process.env.REACT_APP_API_URL)
+      const res = await axios.post('/api/users/login', form);
+     // console.log(res);
+     
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userId', res.data.user._id);
       navigate('/dashboard');
