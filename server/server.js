@@ -26,6 +26,9 @@ app.use((req, res, next) => {
   }
   next();
 });
+app.get('/api/test', (req, res) => {
+  res.send('Backend is working!');
+});
 
 app.use(express.json());
 app.use('/api/users', userRoutes);
