@@ -19,8 +19,9 @@ const ProfileEdit = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(`/api/users/profile/${localStorage.getItem('userId')}`);
-      const data = await res.json();
+      const userId = localStorage.getItem('userId');
+      const response = await axios.get(`/api/users/profile/${userId}`);
+      const data = response.data;
       setProfile({
         bio: data.bio || '',
         skillsOffered: data.skillsOffered || [],
@@ -36,24 +37,27 @@ const ProfileEdit = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     try {
-      await fetch('/api/users/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: localStorage.getItem('token'),
-        },
-        body: JSON.stringify(profile),
-      });
-      
+      // Send PUT request with updated profile data
+      await axios.put(
+        '/api/users/profile',
+        profile,
+        {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
       // Clear form and redirect after successful update
       setProfile({
         bio: '',
         skillsOffered: [],
         skillsWanted: []
       });
-      
+
       alert('Profile updated successfully!');
       navigate('/profile'); // Redirect to profile page
     } catch (error) {

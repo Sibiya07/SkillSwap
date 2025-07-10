@@ -1,13 +1,20 @@
 // server/controllers/exchangeController.js
 const Exchange = require('../models/ExchangeRequest');
 
+
 exports.sendRequest = async (req, res) => {
   if (!req.user || !req.user.id) {
     return res.status(401).json({ message: 'Unauthorized: User info missing' });
   }
+
+ 
+  if (req.body.from && req.body.from !== req.user.id) {
+    return res.status(403).json({ message: 'Forbidden: Cannot spoof sender ID' });
+  }
+
   try {
     const request = await Exchange.create({
-      from: req.user.id,
+      from: req.user.id,  
       to: req.body.to,
     });
     res.json(request);
@@ -16,6 +23,9 @@ exports.sendRequest = async (req, res) => {
     res.status(500).send('Error sending request');
   }
 };
+
+
+
 
 // controllers/exchangeController.js
 exports.getRequests = async (req, res) => {
@@ -28,13 +38,14 @@ exports.getRequests = async (req, res) => {
     })
     .populate('from', 'name skillsOffered skillsWanted')
     .populate('to', 'name skillsOffered skillsWanted');
-
+     console.log(requests);
     res.json(requests);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error fetching requests');
   }
 };
+
 
 exports.updateRequest = async (req, res) => {
   try {

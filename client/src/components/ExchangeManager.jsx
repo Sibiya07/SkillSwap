@@ -53,6 +53,7 @@ const ExchangeManager = () => {
           },
         }
       );
+
       setRequests(prev =>
         prev.map(req => (req._id === id ? { ...req, status } : req))
       );
@@ -82,19 +83,33 @@ const ExchangeManager = () => {
       <nav className="navbar">
         <div className="navbar-brand">SkillSwap</div>
         <div className="navbar-links">
-          <Link to="/dashboard" className="nav-link"><i className="fas fa-home"></i> Dashboard</Link>
-          <Link to="/profile" className="nav-link"><i className="fas fa-user"></i> Profile</Link>
-          <Link to="/skills" className="nav-link"><i className="fas fa-lightbulb"></i> Skills</Link>
-          <Link to="/exchanges" className="nav-link active"><i className="fas fa-exchange-alt"></i> Exchanges</Link>
-      <Link to="/all-chats" className="nav-link">  All chats</Link>
-          <button onClick={handleLogout} className="logout-button"><i className="fas fa-sign-out-alt"></i> Logout</button>
+          <Link to="/dashboard" className="nav-link">
+            <i className="fas fa-home"></i> Dashboard
+          </Link>
+          <Link to="/profile" className="nav-link">
+            <i className="fas fa-user"></i> Profile
+          </Link>
+          <Link to="/skills" className="nav-link">
+            <i className="fas fa-lightbulb"></i> Skills
+          </Link>
+          <Link to="/exchanges" className="nav-link active">
+            <i className="fas fa-exchange-alt"></i> Exchanges
+          </Link>
+          <Link to="/all-chats" className="nav-link">
+            All chats
+          </Link>
+          <button onClick={handleLogout} className="logout-button">
+            <i className="fas fa-sign-out-alt"></i> Logout
+          </button>
         </div>
       </nav>
 
       {/* Main Content */}
       <div className="exchange-content">
         <div className="header-section">
-          <h1><i className="fas fa-exchange-alt"></i> Exchange Requests</h1>
+          <h1>
+            <i className="fas fa-exchange-alt"></i> Exchange Requests
+          </h1>
         </div>
 
         {requests.length === 0 ? (
@@ -106,24 +121,32 @@ const ExchangeManager = () => {
           <div className="requests-grid">
             {requests.map(req => {
               const isSender = req.from?._id === userId;
+              const isRecipient = req.to?._id === userId;
               const otherUser = isSender ? req.to : req.from;
-              const labelText = isSender ? `To: ${otherUser?.name}` : `From: ${otherUser?.name}`;
+              const labelText = isSender
+                ? `To: ${otherUser?.name}`
+                : `From: ${otherUser?.name}`;
 
               return (
                 <div key={req._id} className="request-card">
                   {/* Header */}
                   <div className="request-header">
                     <div className="user-info">
-                      <div className="avatar">{otherUser?.name?.charAt(0) || '?'}</div>
+                      <div className="avatar">
+                        {otherUser?.name?.charAt(0).toUpperCase() || '?'}
+                      </div>
                       <div>
                         <h3>{labelText}</h3>
                         <p className="request-date">
-                          {req.createdAt ? new Date(req.createdAt).toLocaleDateString() : 'No date'}
+                          {req.createdAt
+                            ? new Date(req.createdAt).toLocaleDateString()
+                            : 'No date'}
                         </p>
                       </div>
                     </div>
                     <div className={`status-badge ${req.status || 'pending'}`}>
-                      {(req.status || 'pending').charAt(0).toUpperCase() + (req.status || 'pending').slice(1)}
+                      {(req.status || 'pending').charAt(0).toUpperCase() +
+                        (req.status || 'pending').slice(1)}
                     </div>
                   </div>
 
@@ -134,7 +157,9 @@ const ExchangeManager = () => {
                       <div className="skills-list">
                         {req.from?.skillsOffered?.length > 0 ? (
                           req.from.skillsOffered.map((skill, i) => (
-                            <span key={i} className="skill-tag">{skill}</span>
+                            <span key={i} className="skill-tag">
+                              {skill}
+                            </span>
                           ))
                         ) : (
                           <span className="no-skills">No skills offered</span>
@@ -146,7 +171,9 @@ const ExchangeManager = () => {
                       <div className="skills-list">
                         {req.to?.skillsWanted?.length > 0 ? (
                           req.to.skillsWanted.map((skill, i) => (
-                            <span key={i} className="skill-tag wanted">{skill}</span>
+                            <span key={i} className="skill-tag wanted" key={i}>
+                              {skill}
+                            </span>
                           ))
                         ) : (
                           <span className="no-skills">No skills requested</span>
@@ -155,13 +182,19 @@ const ExchangeManager = () => {
                     </div>
                   </div>
 
-                  {/* Actions */}
-                  {!isSender && (req.status === 'pending' || !req.status) && (
+                  {/* Actions - Only show accept/reject buttons if logged-in user is recipient and status is pending */}
+                  {isRecipient && (req.status === 'pending' || !req.status) && (
                     <div className="action-buttons">
-                      <button onClick={() => respond(req._id, 'accepted')} className="accept-btn">
+                      <button
+                        onClick={() => respond(req._id, 'accepted')}
+                        className="accept-btn"
+                      >
                         <i className="fas fa-check"></i> Accept
                       </button>
-                      <button onClick={() => respond(req._id, 'rejected')} className="reject-btn">
+                      <button
+                        onClick={() => respond(req._id, 'rejected')}
+                        className="reject-btn"
+                      >
                         <i className="fas fa-times"></i> Reject
                       </button>
                     </div>

@@ -17,9 +17,9 @@ const Profile = () => {
           return;
         }
         
-        const response = await fetch(`/api/users/profile/${userId}`);
-        const data = await response.json();
-        setUser(data);
+        // Changed fetch to axios here
+        const response = await axios.get(`/api/users/profile/${userId}`);
+        setUser(response.data);
       } catch (error) {
         console.error('Error fetching profile:', error);
       } finally {
